@@ -1,6 +1,6 @@
 # train.py
 
-from simpletransformers.classification import MultiLabelClassificationModel, ClassificationArgs
+from simpletransformers.classification import MultiLabelClassificationModel, MultiLabelClassificationArgs
 import pandas as pd
 import json
 import time
@@ -19,10 +19,11 @@ def getDataFrame():
         listJson = json.loads(file.read())  # 将 JSON 转成数组
 
     # 将训练数据转成 panda DataFrame，并提供 headers
-    df = pd.DataFrame(listJson)
-    df.columns = ["text", "labels"]
-    df["labels"] = pd.numeric(df["labels"])
-    
+    df = pd.DataFrame(listJson, columns=["text", "label"])
+
+    # 将标签列表转换为数字列表
+    df["label"] = df["label"].apply(lambda x: [int(i) for i in x])
+
     # 回传 DataFrame
     return df
 
@@ -32,7 +33,7 @@ def train(df):
     dir_name = 'bert-base-chinese-bs-64-epo-3'
 
     # 自定义参数
-    model_args = ClassificationArgs()
+    model_args = MultiLabelClassificationArgs()
     model_args.train_batch_size = 64
     model_args.num_train_epochs = 3
     model_args.output_dir = f"outputs/{dir_name}"
@@ -55,3 +56,4 @@ if __name__ == "__main__":
     train(df)
     tEnd = time.time()
     print(f"执行花费 {tEnd - tStart} 秒。")
+    # [0,0,0,0.5,0.5,0

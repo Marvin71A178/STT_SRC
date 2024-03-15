@@ -23,8 +23,11 @@ def getData():
         # 走訪每一組對話
         for listDoc in listJson: 
             # 整合所有對話
+            for i in listDoc:
+                li = [0,0,0,0,0,0]
+                li[int(i[1])] += 1 
+                i[1] = li
             listCECG += listDoc
-    
     # 回傳符合訓練格式的對話資料
     return listCECG
 
