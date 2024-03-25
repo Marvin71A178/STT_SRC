@@ -147,7 +147,7 @@ def _do_predictions(texts, melodies, duration, progress=False, gradio_progress=N
     #     file_cleaner.add(video)
     print("batch finished", len(texts), time.time() - be)
     print("Tempfiles currently stored: ", len(file_cleaner.files))
-    return out_videos, out_wavs
+    return out_wavs
 
 if __name__ == "__main__":
     global USE_DIFFUSION
