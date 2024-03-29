@@ -14,10 +14,10 @@ from einops import rearrange
 import torch
 import gradio as gr
 
-from audiocraft.data.audio_utils import convert_audio
-from audiocraft.data.audio import audio_write
-from audiocraft.models.encodec import InterleaveStereoCompressionModel
-from audiocraft.models import MusicGen, MultiBandDiffusion
+from Music.api.audiocraft.data.audio_utils import convert_audio
+from Music.api.audiocraft.data.audio import audio_write
+from Music.api.audiocraft.models.encodec import InterleaveStereoCompressionModel
+from Music.api.audiocraft.models import MusicGen, MultiBandDiffusion
 
 
 MODEL = None  # Last used model
@@ -79,6 +79,8 @@ def make_waveform(*args, **kwargs):
 
 def load_model(version='facebook/musicgen-melody'):
     global MODEL
+    global USE_DIFFUSION
+    USE_DIFFUSION = False
     print("Loading model", version)
     if MODEL is None or MODEL.name != version:
         # Clear PyTorch CUDA cache and delete model
@@ -88,7 +90,7 @@ def load_model(version='facebook/musicgen-melody'):
         MODEL = MusicGen.get_pretrained(version)
 
 
-def _do_predictions(texts, melodies, duration, progress=False, gradio_progress=None, **gen_kwargs):
+def _do_predictions(texts, duration, melodies=[], progress=False, gradio_progress=None, **gen_kwargs):
     MODEL.set_generation_params(duration=duration, **gen_kwargs)
     print("new batch", len(texts), texts, [None if m is None else (m[0], m[1].shape) for m in melodies])
     be = time.time()
@@ -150,8 +152,6 @@ def _do_predictions(texts, melodies, duration, progress=False, gradio_progress=N
     return out_wavs
 
 if __name__ == "__main__":
-    global USE_DIFFUSION
-    USE_DIFFUSION = False
     load_model()
     text = "The world is peace and love"
     result = _do_predictions(texts=[text] , melodies=[] , duration = 20 , progress=False, gradio_progress=None)

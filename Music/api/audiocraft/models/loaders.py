@@ -27,7 +27,7 @@ import os
 from omegaconf import OmegaConf, DictConfig
 import torch
 
-import audiocraft
+import Music.api.audiocraft
 from . import builders
 from .encodec import CompressionModel
 
@@ -63,7 +63,7 @@ def _get_state_dict(
 
         file = hf_hub_download(
             repo_id=file_or_url_or_id, filename=filename, cache_dir=cache_dir,
-            library_name="audiocraft", library_version=audiocraft.__version__)
+            library_name="audiocraft", library_version=Music.api.audiocraft.__version__)
         return torch.load(file, map_location=device)
 
 
@@ -135,7 +135,7 @@ def load_lm_model_magnet(file_or_url_or_id: tp.Union[Path, str], compression_mod
     cfg.transformer_lm.span_len = cfg.masking.span_len
 
     # MAGNeT models v1 support only xformers backend.
-    from audiocraft.modules.transformer import set_efficient_attention_backend
+    from Music.api.audiocraft.modules.transformer import set_efficient_attention_backend
     if cfg.transformer_lm.memory_efficient:
         set_efficient_attention_backend("xformers")
 

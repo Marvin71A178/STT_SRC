@@ -11,7 +11,7 @@ from the Hydra config.
 
 import typing as tp
 
-import audiocraft
+import Music.api.audiocraft
 import omegaconf
 import torch
 
@@ -59,8 +59,8 @@ def get_encodec_autoencoder(encoder_name: str, cfg: omegaconf.DictConfig):
         decoder_override_kwargs = kwargs.pop('decoder')
         encoder_kwargs = {**kwargs, **encoder_override_kwargs}
         decoder_kwargs = {**kwargs, **decoder_override_kwargs}
-        encoder = audiocraft.modules.SEANetEncoder(**encoder_kwargs)
-        decoder = audiocraft.modules.SEANetDecoder(**decoder_kwargs)
+        encoder = Music.api.audiocraft.modules.SEANetEncoder(**encoder_kwargs)
+        decoder = Music.api.audiocraft.modules.SEANetDecoder(**decoder_kwargs)
         return encoder, decoder
     else:
         raise KeyError(f"Unexpected compression model {cfg.compression_model}")
@@ -199,8 +199,8 @@ def get_debug_compression_model(device='cpu', sample_rate: int = 32000):
         'dimension': 32,
         'ratios': ratios,
     }
-    encoder = audiocraft.modules.SEANetEncoder(**seanet_kwargs)
-    decoder = audiocraft.modules.SEANetDecoder(**seanet_kwargs)
+    encoder = Music.api.audiocraft.modules.SEANetEncoder(**seanet_kwargs)
+    decoder = Music.api.audiocraft.modules.SEANetDecoder(**seanet_kwargs)
     quantizer = qt.ResidualVectorQuantizer(dimension=32, bins=400, n_q=4)
     init_x = torch.randn(8, 32, 128)
     quantizer(init_x, 1)  # initialize kmeans etc.

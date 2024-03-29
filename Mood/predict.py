@@ -1,6 +1,6 @@
 from simpletransformers.classification import MultiLabelClassificationModel, MultiLabelClassificationArgs
 import time
-
+import numpy as np
 
 # 預測情緒
 def prediction(listTestData):
@@ -24,10 +24,10 @@ def prediction(listTestData):
     )
 
     # 預測
-    predictions, raw_outputs = model.predict(listTestData)
-
+    predictions, raw_outputs = model.predict([listTestData])
+    result = raw_outputs[0].tolist()
     # 回傳預測結果，會是一個 list
-    return raw_outputs[0]
+    return result
 
 def mood_ana_api(input_string):
     Data = [str(input_string)]
@@ -41,13 +41,13 @@ if __name__ == "__main__":
     tStart = time.time()
 
     # 準備預測情緒類別。語料可以不只一句！
-    listTestData = [
-        "老師今天很生氣"
-    ]
+    listTestData = "老師今天很生氣"
 
     # 進行預測
     test = prediction(listTestData)
     print(test)
+    print(type(test))
+    
     # 計時結束
     tEnd = time.time()
     # 輸出程式執行的時間
